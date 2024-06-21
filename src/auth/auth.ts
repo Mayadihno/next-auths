@@ -2,9 +2,9 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getUserByEmail } from "@/data/users";
 import { UserModel } from "@/models/userModel";
 import bcrypt from "bcryptjs";
+import { authConfig } from "./authConfig";
 
 export const {
   handlers: { GET, POST },
@@ -12,9 +12,7 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
-  session: {
-    strategy: "jwt",
-  },
+  ...authConfig,
   providers: [
     CredentialsProvider({
       credentials: {
@@ -80,30 +78,4 @@ export const {
       },
     }),
   ],
-  callbacks: {
-    async jwt({ user, trigger, session, token }: any) {
-      if (user) {
-        token.user = {
-          _id: user._id,
-          email: user.email,
-          fullName: user.fullName,
-          image: user.image,
-        };
-      }
-      if (trigger === "update" && session) {
-        token.user = {
-          ...token.user,
-          email: session.user.email,
-          fullName: user.fullName,
-        };
-      }
-      return token;
-    },
-    session: async ({ session, token }: any) => {
-      if (token) {
-        session.user = token.user;
-      }
-      return session;
-    },
-  },
 });

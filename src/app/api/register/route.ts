@@ -6,7 +6,6 @@ import { createUsers } from "@/lib/createUser";
 export const POST = async (request: NextRequest) => {
   const { fullName, password, email } = await request.json();
 
-  console.log(fullName, email, password);
   //db connection
   await dbConnect();
   //password hashing
