@@ -1,13 +1,9 @@
+import { auth } from "@/auth/auth";
 import { SessionProvider } from "next-auth/react";
 import React from "react";
 
-const Providers = ({
-  children,
-  session,
-}: Readonly<{
-  children: React.ReactNode;
-  session: any;
-}>) => {
+const Providers = async ({ children }: { children: React.ReactNode }) => {
+  const session = await auth();
   return <SessionProvider session={session}>{children}</SessionProvider>;
 };
 

@@ -12,6 +12,7 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   ...authConfig,
   providers: [
     CredentialsProvider({
@@ -78,4 +79,29 @@ export const {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ user, trigger, session, token }: any) {
+      if (user) {
+        token.user = {
+          _id: user._id,
+          email: user.email,
+          name: user.fullName,
+        };
+      }
+      if (trigger === "update" && session) {
+        token.user = {
+          ...token.user,
+          email: session.user.email,
+          name: session.user.name,
+        };
+      }
+      return token;
+    },
+    session: async ({ session, token }: any) => {
+      if (token) {
+        session.user = token.user;
+      }
+      return session;
+    },
+  },
 });

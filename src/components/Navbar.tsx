@@ -3,12 +3,13 @@ import Image from "next/image";
 import Logout from "./Logout";
 import { Session } from "next-auth";
 import { auth } from "@/auth/auth";
+import { useSession } from "next-auth/react";
 
 const Navbar = async () => {
   const session = await auth();
-  // const loggedInUser = session?.user;
-  // //console.log(loggedInUser);
-  // const userName = loggedInUser?.name;
+  const loggedInUser = session?.user;
+  //console.log(loggedInUser);
+  const userName = loggedInUser?.name;
 
   return (
     <header className="flex justify-between bg-slate-900 text-white p-2">
@@ -17,22 +18,22 @@ const Navbar = async () => {
       </Link>
       <nav>
         <ul className="flex pt-1">
-          {session?.user ? (
+          {userName ? (
             <li className="flex">
               <Link href="/dashboard">
-                {session.user.image ? (
+                {session?.user?.image ? (
                   <Image
-                    src={session.user.image}
-                    alt={"User Image"}
+                    src={session?.user?.image}
+                    alt={""}
                     width={25}
                     height={25}
                     className="rounded-full"
                   />
                 ) : (
-                  <div className="w-[50px] h-[50px] rounded-full bg-white"></div>
+                  <h2>Image</h2>
                 )}
               </Link>
-
+              <span className="mx-1">|</span>
               <Logout />
             </li>
           ) : (
